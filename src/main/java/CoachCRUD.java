@@ -8,43 +8,6 @@ public class CoachCRUD {
         this.connection = DBConnection.getConnection();
     }
 
-    public void setTeamOperations() {
-    }
-
-    public Coach getCoachByID(String coachID) {
-
-        try {
-            String sql = "SELECT * FROM Coach WHERE coachID = ?";
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, coachID);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-
-                return new Coach(
-                        rs.getString("coachID"),
-                        rs.getString("name"),
-                        new Team(rs.getString("teamID"))
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public void addCoach(Coach coach){
-        try{
-            String sql = "insert into Coach (coachID, name, team) values (?, ?, ?)";
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, coach.getID());
-            stmt.setString(2, coach.getName());
-            stmt.setObject(3, coach.getTeam().getTeamID());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public List<Coach> get(){ //returns arraylist ALL coaches
         List<Coach> coaches = new ArrayList<>();
@@ -63,7 +26,7 @@ public class CoachCRUD {
                 coaches.add(coach);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQL error "+ e.getMessage() );
         }
         return coaches;
     }

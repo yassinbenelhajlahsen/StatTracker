@@ -13,8 +13,9 @@ public class ViewerCRUD {
             String sql = "insert into Viewer (username) values (?)";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, viewer.getUsername());
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQL error "+ e.getMessage() );
         }
     }
 
@@ -32,7 +33,7 @@ public class ViewerCRUD {
                 viewers.add(viewer);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQL error "+ e.getMessage() );
         }
         return viewers;
 

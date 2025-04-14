@@ -18,11 +18,26 @@ public class GameCRUD {
             stmt.setObject(5, game.getTeam1ID().getTeamID());
             stmt.setObject(6, game.getTeam2ID().getTeamID());
             stmt.executeUpdate();
+            System.out.println("Game added successfully");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQL error "+ e.getMessage() );
         }
     }
+
+    public void deleteGame(Game game) {
+        try {
+            String sql = "DELETE FROM Game WHERE GameID = ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, game.getGameID());
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) System.out.println("Game deleted successfully.");
+            else System.out.println("No game found with that ID");
+        } catch (SQLException e) {
+            System.out.println("SQL error "+ e.getMessage() );
+        }
+    }
+
     public List<Game> get(){
         List<Game> games = new ArrayList<>();
 
@@ -43,8 +58,9 @@ public class GameCRUD {
                 games.add(game);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } return games;
+            System.out.println("SQL error "+ e.getMessage() );
+        }
+         return games;
     }
 
     public List<Game> get(String sql){
@@ -66,7 +82,7 @@ public class GameCRUD {
                 games.add(game);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQL error "+ e.getMessage());
         } return games;
     }
 

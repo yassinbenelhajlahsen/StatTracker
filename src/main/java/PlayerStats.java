@@ -3,6 +3,11 @@ public class PlayerStats {
     private Game gameID;
     private String statID;
     private int points;
+
+    public PlayerStats(String statID) {
+        this.statID = statID;
+    }
+
     private int assists;
     private int rebounds;
 

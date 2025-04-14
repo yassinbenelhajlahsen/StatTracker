@@ -9,6 +9,11 @@ public class Follow {
         this.date = date;
     }
 
+    public Follow(Viewer viewerID, Player playerID) {
+        this.viewerID = viewerID;
+        this.playerID=playerID;
+    }
+
     public Viewer getViewerID() {
         return viewerID;
     }

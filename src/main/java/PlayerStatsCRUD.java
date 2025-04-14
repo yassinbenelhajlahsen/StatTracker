@@ -20,8 +20,22 @@ public class PlayerStatsCRUD {
             stmt.setInt(5, playerStats.getAssists());
             stmt.setString(6, playerStats.getStatID());
             stmt.executeUpdate();
+            System.out.println("Stats added successfully.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQL error "+ e.getMessage() );
+        }
+    }
+
+    public void removePlayerStat(PlayerStats playerStats){
+        try{
+            String sql = "delete from PlayerStats where StatID = ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, playerStats.getStatID());
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) System.out.println("Stats deleted successfully.");
+            else System.out.println("No stat found with that ID");
+        } catch (SQLException e) {
+            System.out.println("SQL error "+ e.getMessage() );
         }
     }
 
@@ -46,7 +60,7 @@ public class PlayerStatsCRUD {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQL error "+ e.getMessage() );
         }
 
         return playerStatsList;
@@ -65,7 +79,7 @@ public class PlayerStatsCRUD {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQL error "+ e.getMessage() );
         }
 
         return players;

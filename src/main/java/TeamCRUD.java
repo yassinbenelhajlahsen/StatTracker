@@ -46,7 +46,7 @@ public class TeamCRUD {
         return teams;
     }
 
-    public Map<String, Integer> getWinRecord(String sql){
+    public void getRecord(String sql){
         Map<String, Integer> records = new LinkedHashMap<>();
 
         try{
@@ -54,18 +54,16 @@ public class TeamCRUD {
             ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
-                String teamID = rs.getString("teamID");
                 String teamName = rs.getString("teamName");
                 int wins = rs.getInt("wins");
-                records.put(teamName, wins);
+                int losses = rs.getInt("losses");
+                System.out.printf("%-25s %-10s%n", teamName, wins + "-" + losses);
             }
 
         }catch (SQLException e) {
             e.printStackTrace();
         }
-        return records;
     }
 
-
-
 }
+
