@@ -395,12 +395,12 @@ public class Main {
     static void printMenu() {
         System.out.println("\n--- NBA Stat Tracker ---");
         System.out.println("Select an option from below.");
-        System.out.println("[Easy; Yassin, Nour] 1. List all entities.");
-        System.out.println("[Medium; Yassin, Sena, Frederico] 2. List players who average at least 20 points, 5 rebounds, and 5 assists per game.");
-        System.out.println("[Easy; Yassin Colvin] 3. Lookup game by date.");
-        System.out.println("[Medium; Yassin] 4. List the top 5 teams and their record (Sorted by total wins).");
-        System.out.println("[Hard; Frederico, Yassin, Colvin] 5. Login/Create Account"); //user can create an account or login, to follow players
-        System.out.println("[Hard; Yassin, Nour] 6. Admin Settings"); //allows user to enter/remove data as they please without needing access to database
+        System.out.println("1. List all entities.");
+        System.out.println("2. List players who average at least 20 points, 5 rebounds, and 5 assists per game.");
+        System.out.println("3. Lookup game by date.");
+        System.out.println("4. List the top 5 teams and their record (Sorted by total wins).");
+        System.out.println("5. Login/Create Account"); //user can create an account or login, to follow players
+        System.out.println("6. Admin Settings"); //allows user to enter/remove data as they please without needing access to database
         System.out.println("0. Exit");
     }
 
