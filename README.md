@@ -52,5 +52,5 @@ A Java-based command-line application that connects to a SQL database to manage 
 ## 🧑‍💻 Tech Stack
 
 - **Language**: Java
-- **Database**: MySQL
+- **Database**: MariaDB
 - **Libraries**: JDBC (Java Database Connectivity)
