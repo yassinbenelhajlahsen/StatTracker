@@ -1,13 +1,17 @@
 import java.sql.*;
 import java.util.*;
 
-import static javax.swing.UIManager.getString;
-
 public class FollowCRUD {
     private final Connection connection;
 
     String getNameFromPlayer(Player player) {
-        return getString(player);
+        Map<String, String> map = new HashMap<>();
+        PlayerCRUD playerOperations = new PlayerCRUD();
+        List<Player> players = playerOperations.get();
+        for (Player player1 : players) {
+            map.put(player1.getID(), player1.getName());
+        }
+        return map.get(player.getID());
     }
 
     public FollowCRUD() {
@@ -103,7 +107,7 @@ public class FollowCRUD {
             stmt.setString(2, follow.getPlayerID().getID());
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0)
-                System.out.println("You successfully unfollowed: " + follow.getPlayerID().getName());
+                System.out.println("You successfully unfollowed: " + getNameFromPlayer(follow.getPlayerID()));
             else System.out.println("No player found with that name");
         } catch (SQLException e) {
             System.out.println("SQL error " + e.getMessage());
