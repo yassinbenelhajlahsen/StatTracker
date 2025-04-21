@@ -1,7 +1,7 @@
 public class PlayerStats {
     private Player playerID;
     private Game gameID;
-    private String statID;
+    private final String statID;
     private int points;
 
     public PlayerStats(String statID) {

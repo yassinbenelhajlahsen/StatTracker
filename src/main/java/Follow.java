@@ -1,6 +1,6 @@
 public class Follow {
-    private Viewer viewerID;
-    private Player playerID;
+    private final Viewer viewerID;
+    private final Player playerID;
     private java.sql.Date date;
 
     public Follow(Viewer viewerID, Player playerID, java.sql.Date date) {

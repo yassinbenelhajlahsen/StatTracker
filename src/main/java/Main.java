@@ -86,12 +86,12 @@ public class Main {
     }
 
     static void option2() {
-        PlayerCRUD playerCRUD = new PlayerCRUD();
         PlayerStatsCRUD playerStatsCRUD = new PlayerStatsCRUD();
-        String sql = "SELECT playerID\n" +
-                "FROM PlayerStats\n" +
-                "GROUP BY playerID\n" +
-                "HAVING AVG(points) >= 20 AND AVG(rebounds) >= 5 AND AVG(assists) >= 5;";
+        String sql = """
+                SELECT playerID
+                FROM PlayerStats
+                GROUP BY playerID
+                HAVING AVG(points) >= 20 AND AVG(rebounds) >= 5 AND AVG(assists) >= 5;""";
         List<Player> players = playerStatsCRUD.get(sql);
         System.out.println();
         System.out.println("Player who average at least 20 points, 5 rebounds, and 5 assists per game.");
@@ -125,31 +125,33 @@ public class Main {
     }
 
     static void option4() {
-        String sql = "SELECT \n" +
-                "    t.teamName,\n" +
-                "    COALESCE(w.wins, 0) AS wins,\n" +
-                "    COALESCE(l.losses, 0) AS losses\n" +
-                "FROM team t\n" +
-                "LEFT JOIN (\n" +
-                "    SELECT teamID, COUNT(*) AS wins\n" +
-                "    FROM (\n" +
-                "        SELECT team1ID AS teamID FROM game WHERE team1score > team2score\n" +
-                "        UNION ALL\n" +
-                "        SELECT team2ID AS teamID FROM game WHERE team2score > team1score\n" +
-                "    ) AS win_data\n" +
-                "    GROUP BY teamID\n" +
-                ") w ON t.teamID = w.teamID\n" +
-                "LEFT JOIN (\n" +
-                "    SELECT teamID, COUNT(*) AS losses\n" +
-                "    FROM (\n" +
-                "        SELECT team1ID AS teamID FROM game WHERE team1score < team2score\n" +
-                "        UNION ALL\n" +
-                "        SELECT team2ID AS teamID FROM game WHERE team2score < team1score\n" +
-                "    ) AS loss_data\n" +
-                "    GROUP BY teamID\n" +
-                ") l ON t.teamID = l.teamID\n" +
-                "ORDER BY wins DESC\n" +
-                "Limit 5;\n";
+        String sql = """
+                SELECT\s
+                    t.teamName,
+                    COALESCE(w.wins, 0) AS wins,
+                    COALESCE(l.losses, 0) AS losses
+                FROM team t
+                LEFT JOIN (
+                    SELECT teamID, COUNT(*) AS wins
+                    FROM (
+                        SELECT team1ID AS teamID FROM game WHERE team1score > team2score
+                        UNION ALL
+                        SELECT team2ID AS teamID FROM game WHERE team2score > team1score
+                    ) AS win_data
+                    GROUP BY teamID
+                ) w ON t.teamID = w.teamID
+                LEFT JOIN (
+                    SELECT teamID, COUNT(*) AS losses
+                    FROM (
+                        SELECT team1ID AS teamID FROM game WHERE team1score < team2score
+                        UNION ALL
+                        SELECT team2ID AS teamID FROM game WHERE team2score < team1score
+                    ) AS loss_data
+                    GROUP BY teamID
+                ) l ON t.teamID = l.teamID
+                ORDER BY wins DESC
+                Limit 5;
+                """;
 
         TeamCRUD teamOperations = new TeamCRUD();
         System.out.printf("%-25s %-10s%n", "Team", "Record");
@@ -158,17 +160,18 @@ public class Main {
     }
 
     static void option5() {
-        String sql = "SELECT \n" +
-                "    p.playerID, \n" +
-                "    COUNT(*) AS triple_doubles\n" +
-                "FROM PlayerStats ps\n" +
-                "JOIN Player p ON ps.playerID = p.playerID\n" +
-                "WHERE ps.points >= 10 \n" +
-                "  AND ps.rebounds >= 10 \n" +
-                "  AND ps.assists >= 10\n" +
-                "GROUP BY p.playerID\n" +
-                "HAVING COUNT(*) >= 1\n" +
-                "ORDER BY triple_doubles DESC;";
+        String sql = """
+                SELECT\s
+                    p.playerID,\s
+                    COUNT(*) AS triple_doubles
+                FROM PlayerStats ps
+                JOIN Player p ON ps.playerID = p.playerID
+                WHERE ps.points >= 10\s
+                  AND ps.rebounds >= 10\s
+                  AND ps.assists >= 10
+                GROUP BY p.playerID
+                HAVING COUNT(*) >= 1
+                ORDER BY triple_doubles DESC;""";
 
         PlayerStatsCRUD playerStatsOps = new PlayerStatsCRUD();
         Map<Player, Integer> map = playerStatsOps.getTripDoubles(sql);
@@ -183,11 +186,12 @@ public class Main {
     }
 
     static void option6() {
-        String sql = "SELECT playerID, COUNT(*) AS followers\n" +
-                "FROM Follow\n" +
-                "GROUP BY playerID\n" +
-                "ORDER BY followers DESC\n" +
-                "LIMIT 5;";
+        String sql = """
+                SELECT playerID, COUNT(*) AS followers
+                FROM Follow
+                GROUP BY playerID
+                ORDER BY followers DESC
+                LIMIT 5;""";
         FollowCRUD followOps = new FollowCRUD();
         Map<Player, Integer> playerFollowerMap = followOps.getMostFollowed(sql);
 
@@ -221,7 +225,7 @@ public class Main {
 
         boolean found = false;
         for (Viewer v : viewerList) {
-            if (v.getUsername().equals(username)) {
+            if (v.username().equals(username)) {
                 viewer = v;
                 found = true;
                 break;
@@ -245,7 +249,7 @@ public class Main {
             username = scanner.next();
             isTaken = false;
             for (Viewer v : viewerList) {
-                if (v.getUsername().equals(username)) {
+                if (v.username().equals(username)) {
                     System.out.println("Username already taken. Try another.");
                     isTaken = true;
                 }
@@ -261,7 +265,7 @@ public class Main {
         PlayerCRUD playerOps = new PlayerCRUD();
         do {
             System.out.println();
-            System.out.println("Welcome: " + viewer.getUsername() + ". Select an option from below.");
+            System.out.println("Welcome: " + viewer.username() + ". Select an option from below.");
             System.out.println("1. Follow player");
             System.out.println("2. Unfollow player");
             System.out.println("3. View following list");
@@ -296,7 +300,7 @@ public class Main {
     static void printFollowing(Viewer viewer) {
         FollowCRUD followOps = new FollowCRUD();
         List<Player> followingList = followOps.get(viewer);
-        System.out.println("Username: " + viewer.getUsername());
+        System.out.println("Username: " + viewer.username());
         if (followingList.isEmpty()) System.out.println("Not following anyone yet.");
         else {
             System.out.println("Players");
@@ -315,7 +319,7 @@ public class Main {
         else {
             System.out.println("Followers");
             for (Viewer v : followerList) {
-                System.out.println(v.getUsername());
+                System.out.println(v.username());
             }
         }
     }
@@ -464,6 +468,10 @@ public class Main {
     }
 
     static String getNameFromPlayer(Player player) {
+        return getString(player);
+    }
+
+    static String getString(Player player) {
         Map<String, String> map = new HashMap<>();
         PlayerCRUD playerOperations = new PlayerCRUD();
         List<Player> players = playerOperations.get();
@@ -556,7 +564,7 @@ public class Main {
 
     static void printAllGames() {
         GameCRUD gameOperations = new GameCRUD();
-        List<Game> games = gameOperations.get();
+        List<Game> games = gameOperations.get("SELECT * FROM Game;");
         System.out.printf("%-12s %-12s %-12s %-10s %-10s %-10s%n",
                 "Date", "Home Score", "Away Score", "GameID", "HomeID", "AwayID");
         for (Game game : games) {
@@ -571,7 +579,7 @@ public class Main {
         List<Viewer> viewers = viewerOperations.get();
         System.out.println("Username");
         for (Viewer viewer : viewers) {
-            System.out.println(viewer.getUsername());
+            System.out.println(viewer.username());
         }
     }
 

@@ -10,19 +10,6 @@ public class TeamCRUD {
 
 
 
-    public void addTeam(Team team){
-        try{
-            String sql = "insert into Team (teamID, teamName, coachID, conference) values (?, ?, ?, ?)";
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, team.getTeamID());
-            stmt.setString(2, team.getTeamName());
-            stmt.setObject(3, team.getCoach());
-            stmt.setString(4, team.getConf());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public List<Team> get(){
         List<Team> teams = new ArrayList<>();
@@ -40,8 +27,8 @@ public class TeamCRUD {
                 );
                 teams.add(team);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }catch (SQLException e) {
+            System.out.println("SQL error: " + e.getMessage());
         }
         return teams;
     }
@@ -59,7 +46,7 @@ public class TeamCRUD {
             }
 
         }catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("SQL error: " + e.getMessage());
         }
     }
 

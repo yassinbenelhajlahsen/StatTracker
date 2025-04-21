@@ -2,7 +2,7 @@ public class Game {
     private java.sql.Date date;
     private int team1score;
     private int team2score;
-    private String gameID;
+    private final String gameID;
     private Team team1ID;
     private Team team2ID;
 

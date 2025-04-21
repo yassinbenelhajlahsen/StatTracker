@@ -38,30 +38,7 @@ public class GameCRUD {
         }
     }
 
-    public List<Game> get(){
-        List<Game> games = new ArrayList<>();
 
-        try{
-            String sql = "select * from Game";
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-
-            while (rs.next()){
-                Game game = new Game(
-                        rs.getDate("date"),
-                        rs.getInt("team1score"),
-                        rs.getInt("team2score"),
-                        rs.getString("gameID"),
-                        new Team(rs.getString("team1ID")),
-                        new Team(rs.getString("team2ID"))
-                );
-                games.add(game);
-            }
-        } catch (SQLException e) {
-            System.out.println("SQL error "+ e.getMessage() );
-        }
-         return games;
-    }
 
     public List<Game> get(String sql){
         List<Game> games = new ArrayList<>();

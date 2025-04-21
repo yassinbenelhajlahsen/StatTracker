@@ -1,17 +1,13 @@
 import java.sql.*;
 import java.util.*;
 
+import static javax.swing.UIManager.getString;
+
 public class FollowCRUD {
     private final Connection connection;
 
     String getNameFromPlayer(Player player) {
-        Map<String, String> map = new HashMap<>();
-        PlayerCRUD playerOperations = new PlayerCRUD();
-        List<Player> players = playerOperations.get();
-        for (Player player1 : players) {
-            map.put(player1.getID(), player1.getName());
-        }
-        return map.get(player.getID());
+        return getString(player);
     }
 
     public FollowCRUD() {
@@ -32,7 +28,7 @@ public class FollowCRUD {
 
             String sql = "insert into Follow (ViewerID, PlayerID, FollowDate) values (?, ?, ?)";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, follow.getViewerID().getUsername());
+            stmt.setString(1, follow.getViewerID().username());
             stmt.setString(2, follow.getPlayerID().getID());
             stmt.setDate(3, follow.getDate());
             stmt.executeUpdate();
@@ -48,7 +44,7 @@ public class FollowCRUD {
         try {
             String sql = "select PlayerID from Follow where ViewerID = ?";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, viewer.getUsername());
+            stmt.setString(1, viewer.username());
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -103,7 +99,7 @@ public class FollowCRUD {
         try {
             String sql = "DELETE FROM Follow WHERE ViewerID = ? AND PlayerID = ?";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, follow.getViewerID().getUsername());
+            stmt.setString(1, follow.getViewerID().username());
             stmt.setString(2, follow.getPlayerID().getID());
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0)

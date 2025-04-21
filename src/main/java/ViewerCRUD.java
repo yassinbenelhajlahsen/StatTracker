@@ -12,7 +12,7 @@ public class ViewerCRUD {
         try {
             String sql = "insert into Viewer (username) values (?)";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, viewer.getUsername());
+            stmt.setString(1, viewer.username());
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("SQL error "+ e.getMessage() );
