@@ -85,4 +85,22 @@ public class PlayerStatsCRUD {
         return players;
     }
 
+    public Map <Player, Integer> getTripDoubles(String sql){
+        Map <Player, Integer> tripDoubleMap = new LinkedHashMap<>();
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+
+                Player player = new Player(rs.getString(("playerID")));
+                int tripleDoubles = rs.getInt("triple_doubles");
+                tripDoubleMap.put(player, tripleDoubles);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("SQL error: " + e.getMessage());
+        }
+        return tripDoubleMap;
+    }
+
 }

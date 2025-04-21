@@ -80,6 +80,24 @@ public class FollowCRUD {
         return followers;
     }
 
+    public Map<Player, Integer> getMostFollowed(String sql){
+        Map<Player, Integer> playerFollowerMap = new LinkedHashMap<>();
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+
+                Player player = new Player(rs.getString(("playerID")));
+                int followers = rs.getInt("followers");
+                playerFollowerMap.put(player, followers);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("SQL error: " + e.getMessage());
+        }
+        return  playerFollowerMap;
+    }
+
 
     public void unfollow(Follow follow) {
         try {

@@ -47,8 +47,6 @@ public class TeamCRUD {
     }
 
     public void getRecord(String sql){
-        Map<String, Integer> records = new LinkedHashMap<>();
-
         try{
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);

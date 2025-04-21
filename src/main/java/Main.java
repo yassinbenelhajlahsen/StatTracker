@@ -1,12 +1,17 @@
-import java.util.*;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final LocalDate today = LocalDate.now();
+
     public static void main(String[] args) {
-        
+
+
         int choice;
 
         do {
@@ -31,14 +36,21 @@ public class Main {
                 case 6:
                     option6();
                     break;
+                case 7:
+                    option7();
+                    break;
+                case 8:
+                    option8();
+                    break;
 
             }
         } while (choice != 0);
         scanner.close();
     }
 
+
     static void option1() {
-        
+
         int choice;
         do {
             System.out.println();
@@ -90,7 +102,7 @@ public class Main {
     }
 
     static void option3() {
-        
+
         System.out.println();
         System.out.println("Enter a date. (YYYY-MM-DD)");
         scanner.nextLine();
@@ -145,7 +157,49 @@ public class Main {
 
     }
 
-    static void option5(){
+    static void option5() {
+        String sql = "SELECT \n" +
+                "    p.playerID, \n" +
+                "    COUNT(*) AS triple_doubles\n" +
+                "FROM PlayerStats ps\n" +
+                "JOIN Player p ON ps.playerID = p.playerID\n" +
+                "WHERE ps.points >= 10 \n" +
+                "  AND ps.rebounds >= 10 \n" +
+                "  AND ps.assists >= 10\n" +
+                "GROUP BY p.playerID\n" +
+                "HAVING COUNT(*) >= 1\n" +
+                "ORDER BY triple_doubles DESC;";
+
+        PlayerStatsCRUD playerStatsOps = new PlayerStatsCRUD();
+        Map<Player, Integer> map = playerStatsOps.getTripDoubles(sql);
+
+        System.out.printf("%-15s %s\n", "Player", "Triple Doubles");
+        for (var entry : map.entrySet()) {
+            String name = getNameFromPlayer(entry.getKey());
+            int count = entry.getValue();
+            System.out.printf("%-15s %s\n", name, count);
+        }
+
+    }
+
+    static void option6() {
+        String sql = "SELECT playerID, COUNT(*) AS followers\n" +
+                "FROM Follow\n" +
+                "GROUP BY playerID\n" +
+                "ORDER BY followers DESC\n" +
+                "LIMIT 5;";
+        FollowCRUD followOps = new FollowCRUD();
+        Map<Player, Integer> playerFollowerMap = followOps.getMostFollowed(sql);
+
+        System.out.printf("%-25s %s\n", "Player", "Follower Count");
+        for (var entry : playerFollowerMap.entrySet()) {
+            String name = getNameFromPlayer(entry.getKey());
+            int count = entry.getValue();
+            System.out.printf("%-25s %s\n", name, count);
+        }
+    }
+
+    static void option7() {
         int choice;
         do {
             System.out.println("1. Login");
@@ -179,7 +233,8 @@ public class Main {
             followMenu(viewer);
         }
     }
-    static void createAccount(){
+
+    static void createAccount() {
         ViewerCRUD viewerOps = new ViewerCRUD();
         List<Viewer> viewerList = viewerOps.get();
 
@@ -188,7 +243,7 @@ public class Main {
         do {
             System.out.print("Enter desired username: ");
             username = scanner.next();
-            isTaken=false;
+            isTaken = false;
             for (Viewer v : viewerList) {
                 if (v.getUsername().equals(username)) {
                     System.out.println("Username already taken. Try another.");
@@ -200,7 +255,7 @@ public class Main {
         System.out.println("Account created successfully.");
     }
 
-    static void followMenu(Viewer viewer){
+    static void followMenu(Viewer viewer) {
         int choice;
         FollowCRUD followOps = new FollowCRUD();
         PlayerCRUD playerOps = new PlayerCRUD();
@@ -237,10 +292,11 @@ public class Main {
 
         } while (choice != 0);
     }
-    static void printFollowing(Viewer viewer){
+
+    static void printFollowing(Viewer viewer) {
         FollowCRUD followOps = new FollowCRUD();
         List<Player> followingList = followOps.get(viewer);
-        System.out.println("Username: "+ viewer.getUsername());
+        System.out.println("Username: " + viewer.getUsername());
         if (followingList.isEmpty()) System.out.println("Not following anyone yet.");
         else {
             System.out.println("Players");
@@ -250,11 +306,11 @@ public class Main {
         }
     }
 
-    static void printFollowers(Player player){
+    static void printFollowers(Player player) {
         FollowCRUD followOps = new FollowCRUD();
         List<Viewer> followerList = followOps.get(player);
 
-        System.out.println("Player: "+getNameFromPlayer(player));
+        System.out.println("Player: " + getNameFromPlayer(player));
         if (followerList.isEmpty()) System.out.println("No followers yet.");
         else {
             System.out.println("Followers");
@@ -263,8 +319,9 @@ public class Main {
             }
         }
     }
+
     static boolean authentication() {
-        
+
         String password = "admin";
         int tries = 0;
         boolean authenticated = false;
@@ -284,7 +341,7 @@ public class Main {
         return authenticated;
     }
 
-    static void option6() {
+    static void option8() {
         int choice;
         int input;
         if (authentication()) {
@@ -327,7 +384,7 @@ public class Main {
     }
 
     static void adminInsertPlayer() {
-        
+
         System.out.print("Enter the player's name: ");
         scanner.nextLine();
         String name = scanner.nextLine();
@@ -340,7 +397,7 @@ public class Main {
 
     static void adminRemovePlayer() {
         System.out.print("Enter the PlayerID: ");
-        
+
         String playerID = scanner.next();
         System.out.println();
         removePlayer(new Player(playerID));
@@ -348,7 +405,7 @@ public class Main {
 
     static void adminInsertGame() {
         Date date = null;
-        
+
         System.out.println("Enter date (YYYY-MM-DD): ");
         try {
             date = Date.valueOf(scanner.nextLine());
@@ -365,15 +422,15 @@ public class Main {
         insertGame(new Game(date, homeScore, awayScore, gameID, homeTeam, awayTeam));
     }
 
-    static void adminRemoveGame(){
-        
+    static void adminRemoveGame() {
+
         System.out.print("Enter gameID: ");
         scanner.nextLine();
         removeGame(new Game(scanner.next()));
     }
 
-    static void adminInsertPlayerStat(){
-        
+    static void adminInsertPlayerStat() {
+
         System.out.print("Enter PlayerID, GameID, StatID, Points, Rebounds, Assists (Ex: 13 1 19 8 12 22): ");
         scanner.nextLine();
         Player p = new Player(scanner.next());
@@ -382,11 +439,11 @@ public class Main {
         int pts = scanner.nextInt();
         int reb = scanner.nextInt();
         int ast = scanner.nextInt();
-        insertPlayerStat(new PlayerStats(p ,game, statID, pts, ast, reb));
+        insertPlayerStat(new PlayerStats(p, game, statID, pts, ast, reb));
     }
 
-    static void adminRemovePlayerStat(){
-        
+    static void adminRemovePlayerStat() {
+
         System.out.println("Enter StatID: ");
         scanner.nextLine();
         removePlayerStat(new PlayerStats(scanner.next()));
@@ -399,8 +456,10 @@ public class Main {
         System.out.println("2. List players who average at least 20 points, 5 rebounds, and 5 assists per game.");
         System.out.println("3. Lookup game by date.");
         System.out.println("4. List the top 5 teams and their record (Sorted by total wins).");
-        System.out.println("5. Login/Create Account"); //user can create an account or login, to follow players
-        System.out.println("6. Admin Settings"); //allows user to enter/remove data as they please without needing access to database
+        System.out.println("5. List the players with the most triple doubles this season.");
+        System.out.println("6. List the top 5 most followed players.");
+        System.out.println("7. Login/Create Account"); //user can create an account or login, to follow players
+        System.out.println("8. Admin Settings"); //allows user to enter/remove data as they please without needing access to database
         System.out.println("0. Exit");
     }
 
@@ -440,19 +499,21 @@ public class Main {
         gameOperations.addGame(game);
     }
 
-    static void removeGame(Game game){
+    static void removeGame(Game game) {
         GameCRUD gameOperations = new GameCRUD();
         gameOperations.deleteGame(game);
     }
-    static void insertPlayerStat(PlayerStats ps){
+
+    static void insertPlayerStat(PlayerStats ps) {
         PlayerStatsCRUD playerStatsOperations = new PlayerStatsCRUD();
         playerStatsOperations.addPlayerStat(ps);
     }
 
-    static void removePlayerStat(PlayerStats ps){
+    static void removePlayerStat(PlayerStats ps) {
         PlayerStatsCRUD playerStatsOp = new PlayerStatsCRUD();
         playerStatsOp.removePlayerStat(ps);
     }
+
     static void insertViewer(Viewer viewer) {
         ViewerCRUD viewerOperations = new ViewerCRUD();
         viewerOperations.addViewer(viewer);
@@ -469,7 +530,7 @@ public class Main {
         List<Player> players = playerOperations.get();
         System.out.printf("%-10s %-18s %-6s%n", "PlayerID", "Name", "Team");
         for (Player player : players) {
-            System.out.printf("%-10s %-18s %-6s%n", player.getID(), player.getName(), player.getTeam());
+            System.out.printf("%-10s %-18s %-6s%n", player.getID(), player.getName(), getNameFromTeam(player.getTeam()));
         }
     }
 
@@ -478,7 +539,7 @@ public class Main {
         List<Coach> coaches = coachOperations.get();
         System.out.printf("%-10s %-18s %-6s%n", "CoachID", "Name", "Team");
         for (Coach coach : coaches) {
-            System.out.printf("%-10s %-18s %-6s%n", coach.getID(), coach.getName(), coach.getTeam());
+            System.out.printf("%-10s %-18s %-6s%n", coach.getID(), coach.getName(), getNameFromTeam(coach.getTeam()));
 
         }
     }

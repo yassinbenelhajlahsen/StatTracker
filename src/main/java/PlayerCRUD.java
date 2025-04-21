@@ -39,7 +39,7 @@ public class PlayerCRUD {
     }
 
 
-    public List<Player> get(){ //returns arraylist ALL coaches
+    public List<Player> get(){ //returns arraylist ALL players
         List<Player> players = new ArrayList<>();
 
         try {
